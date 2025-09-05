@@ -9,7 +9,8 @@ Modular trading system with data handling, strategy execution, backtesting, and 
 - **Web UI**: React + TypeScript + Shadcn UI + Vite
 - **Technical Analysis**: `ta` crate (Pure Rust, MIT license)
 - **Charting**: Apache ECharts or Recharts (both free)
-- **Development**: Docker Compose for local environment
+- **Development**: Docker Compose for local development and deployment
+- **Reverse Proxy**: Nginx (for local multi-service routing)
 
 ---
 
@@ -20,8 +21,11 @@ Modular trading system with data handling, strategy execution, backtesting, and 
 - [ ] Initialize Rust workspace for core modules
 - [ ] Set up C# solution structure
 - [ ] Create Docker Compose development environment
-- [ ] Set up CI/CD pipeline (GitHub Actions - free)
+- [ ] Set up local development containers for all services
+- [ ] Create Nginx reverse proxy configuration
 - [ ] Initialize React application with Vite
+- [ ] Set up inter-service communication (REST APIs)
+- [ ] Create local environment configuration files
 
 ### 1.2 Data Handling & Processing Module (Rust)
 - [ ] Define core data structures (OHLCV, Tick, etc.)
@@ -139,17 +143,19 @@ Modular trading system with data handling, strategy execution, backtesting, and 
 - [ ] Implement position sizing algorithms
 - [ ] Add strategy pause/resume functionality
 
-### 3.4 Production Polish & Deployment
+### 3.4 Production Polish & Local Deployment
 - [ ] Add comprehensive logging system
 - [ ] Implement monitoring and metrics
-- [ ] Create deployment documentation
+- [ ] Create local deployment documentation
 - [ ] Add database migration system
-- [ ] Implement backup and recovery
-- [ ] Add security hardening
+- [ ] Implement backup and recovery for local data
+- [ ] Add security hardening for local setup
 - [ ] Create user authentication (JWT-based)
 - [ ] Add API rate limiting
-- [ ] Create production Docker images
-- [ ] Set up monitoring dashboards
+- [ ] Optimize Docker images for local performance
+- [ ] Set up local monitoring dashboards (Grafana + Prometheus)
+- [ ] Create local data persistence volumes
+- [ ] Add container health checks
 
 ---
 
@@ -167,13 +173,14 @@ Modular trading system with data handling, strategy execution, backtesting, and 
 - [ ] Strategy marketplace
 
 ### Infrastructure Improvements
-- [ ] Microservices deployment (Kubernetes)
-- [ ] Advanced caching (Redis)
-- [ ] Message queue integration (RabbitMQ)
-- [ ] Advanced monitoring (Prometheus + Grafana)
-- [ ] Load balancing and scaling
-- [ ] Multi-region deployment
+- [ ] Advanced caching (Redis container)
+- [ ] Message queue integration (RabbitMQ container)
+- [ ] Advanced monitoring (Prometheus + Grafana containers)
+- [ ] Load balancing with Nginx
+- [ ] Local container orchestration optimization
 - [ ] Advanced security features
+- [ ] Local SSL/TLS setup
+- [ ] Container resource optimization
 
 ---
 
@@ -193,15 +200,56 @@ Modular trading system with data handling, strategy execution, backtesting, and 
 - **Frontend**: React (MIT), Vite (MIT), Shadcn UI (MIT)
 - **Charting**: Apache ECharts (Apache 2.0)
 - **Technical Analysis**: ta crate (MIT)
-- **Development**: Docker (Apache 2.0), GitHub Actions (free tier)
+- **Development**: Docker + Docker Compose (Apache 2.0)
+- **Reverse Proxy**: Nginx (BSD-2-Clause)
+- **Monitoring**: Prometheus + Grafana (Apache 2.0)
+
+### Local Development Architecture
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Web UI        │    │   Nginx Proxy    │    │   TimescaleDB   │
+│   (React:3000)  │◄──►│   (Port 80/443)  │◄──►│   (Port 5432)   │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │
+                       ┌────────┴────────┐
+                       ▼                 ▼
+            ┌─────────────────┐    ┌─────────────────┐
+            │   Data Service  │    │  Wallet Service │
+            │   (Rust:8001)   │    │   (C#:8002)     │
+            └─────────────────┘    └─────────────────┘
+                       │                 │
+                       └────────┬────────┘
+                                ▼
+                    ┌─────────────────┐
+                    │ Strategy Runner │
+                    │   (Rust:8003)   │
+                    └─────────────────┘
+```
 
 ### Development Workflow
-1. Feature branch development
-2. Pull request reviews
-3. Automated testing on PR
-4. Merge to main after approval
-5. Automated deployment to staging
-6. Manual promotion to production
+1. Local feature development with Docker Compose
+2. Code review and testing locally
+3. Integration testing in local environment
+4. Documentation updates
+5. Version tagging for releases
+
+### Getting Started Commands
+```bash
+# Start entire system
+docker-compose up -d
+
+# View logs
+docker-compose logs -f [service-name]
+
+# Rebuild specific service
+docker-compose build [service-name]
+
+# Stop system
+docker-compose down
+
+# Reset database
+docker-compose down -v && docker-compose up -d
+```
 
 ---
 
